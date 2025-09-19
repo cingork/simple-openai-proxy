@@ -14,7 +14,7 @@ This project is a simple proxy server for the OpenAI API. It allows you to use t
 
 ### Prerequisites
 
-*   Python 3.7+
+*   Python 3.9+
 *   pip
 
 ### Installation
@@ -80,7 +80,7 @@ To create a chat completion, you can use the following `curl` command:
 
 ```bash
 curl http://localhost:8192/v1/chat/completions -H "Content-Type: application/json" -d '{
-  "model": "gpt-3.5-turbo",
+  "model": "gpt-5-mini",
   "messages": [
     {
       "role": "user",
@@ -96,15 +96,16 @@ To build and run the project using Docker, use the following commands:
 
 1.  Build the Docker image:
     ```bash
-    docker build -t simple-openai-proxy .
+    docker-compose build
     ```
 2.  Run the Docker container:
     ```bash
-    docker run -p 8192:8192 -e PROVIDER=<provider> -e <PROVIDER>_API_KEY=<api_key> simple-openai-proxy
+    docker-compose up
     ```
 
-For example, to run the container with the OpenAI provider, use the following command:
-
-```bash
-docker run -p 8192:8192 -e PROVIDER=openai -e OPENAI_API_KEY=<your_openai_api_key> simple-openai-proxy
+For example, to run the container with the OpenAI provider, create a `.env` file with the following content:
 ```
+PROVIDER=openai
+OPENAI_API_KEY=<your_openai_api_key>
+``` 
+And then run `docker-compose up`.

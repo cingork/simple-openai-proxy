@@ -42,7 +42,7 @@ if __name__ == "__main__":
 
     load_dotenv()
 
-    provider = args.provider
+    provider = args.provider or os.getenv("PROVIDER")
     if not provider:
         provider_keys = '/'.join(PROVIDERS.keys())
         provider = input(f"Select API provider ({provider_keys}): ")
@@ -59,11 +59,10 @@ if __name__ == "__main__":
     else:
         base_url = PROVIDERS[provider]
 
-    api_key_name = f"{provider.upper()}_API_KEY"
-    API_KEY = args.api_key or os.getenv(api_key_name)
-    
+    # Always use OPENAI_API_KEY for all providers
+    API_KEY = args.api_key or os.getenv("OPENAI_API_KEY")
     if not API_KEY:
-        API_KEY = input(f"Enter API key for {provider}: ")
+        API_KEY = input("Enter API key: ")
 
     client = get_client(api_key=API_KEY, base_url=base_url)
 

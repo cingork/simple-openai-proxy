@@ -10,4 +10,4 @@ COPY client.py .
 
 EXPOSE 8192
 
-CMD ["python", "main.py"]
+CMD ["/bin/bash", "-c", "python main.py"]
