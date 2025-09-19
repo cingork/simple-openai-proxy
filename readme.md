@@ -1,5 +1,7 @@
 # Simple OpenAI Proxy
 
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
 This project is a simple proxy server for the OpenAI API. It allows you to use the OpenAI API with different providers, such as OpenAI, Azure, or a custom endpoint.
 
 ## Features
@@ -59,6 +61,12 @@ For example, to run the server with the OpenAI provider, use the following comma
 
 ```bash
 python main.py --provider openai --api_key <your_openai_api_key>
+```
+
+**Alternatively**, you can run the script without any arguments and it will prompt you to manually enter the API provider and API key:
+
+```bash
+python main.py
 ```
 
 ## Usage
