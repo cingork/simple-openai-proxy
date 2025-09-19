@@ -119,6 +119,7 @@ For example, to run the container with the OpenAI provider, create a `.env` file
 ```
 PROVIDER=openai
 OPENAI_API_KEY=<your_openai_api_key>
+PORT=8192
 ```
 
 To use a custom provider, your `.env` file should include both the provider and the custom API base URL:
