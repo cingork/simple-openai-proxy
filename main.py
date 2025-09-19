@@ -33,6 +33,16 @@ async def chat(request: Request):
         return completion.model_dump()
 
 
+def running_in_docker() -> bool:
+    """Return True if the process is executing inside a Docker container."""
+    try:
+        if os.path.exists("/.dockerenv"):
+            return True
+        with open("/proc/1/cgroup", "rt") as f:
+            return any(keyword in f.read() for keyword in ("docker", "containerd", "kubepods"))
+    except Exception:
+        return False
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Simple OpenAI Proxy")
     parser.add_argument("--provider", type=str, choices=list(PROVIDERS.keys()), help="API provider to use.")
@@ -66,4 +76,6 @@ if __name__ == "__main__":
 
     client = get_client(api_key=API_KEY, base_url=base_url)
 
-    uvicorn.run(app, port=int(os.environ.get('PORT', 8192)))
+
+    host = "0.0.0.0" if running_in_docker() else "127.0.0.1"
+    uvicorn.run(app, host=host, port=int(os.getenv("PORT", "8192")))

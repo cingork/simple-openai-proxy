@@ -8,3 +8,4 @@ services:
     env_file:
       - .env
     command: ["python", "main.py", "--provider", "${PROVIDER}"]
+    restart: unless-stopped
