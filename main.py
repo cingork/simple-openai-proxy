@@ -1,10 +1,12 @@
 import os
 import uvicorn
 from fastapi import FastAPI, Request
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, JSONResponse
 import argparse
 from dotenv import load_dotenv
 from openai import AsyncOpenAI
+import logging
+from openai import APIError
 
 from client import get_client, PROVIDERS
 
@@ -17,20 +19,34 @@ async def models():
     return model_list.model_dump()
 
 
+def error_response(e: Exception) -> JSONResponse:
+    if isinstance(e, APIError) and hasattr(e, 'body') and e.body:
+        return JSONResponse({"error": e.body}, status_code=e.status_code, media_type="application/json; charset=utf-8")
+    return JSONResponse({"error": {"message": str(e)}}, status_code=getattr(e, 'status_code', 500), media_type="application/json; charset=utf-8")
+
 @app.post("/v1/chat/completions")
 async def chat(request: Request):
-    data = await request.json()
+    try:
+        data = await request.json()
 
-    if data.get("stream"):
-        async def stream():
-            response_stream = await client.chat.completions.create(**data)
-            async for chunk in response_stream:
-                yield f"data: {chunk.model_dump_json()}\n\n"
+        if data.get("stream"):
+            try:
+                response_stream = await client.chat.completions.create(**data)
+                
+                async def stream():
+                    async for chunk in response_stream:
+                        yield f"data: {chunk.model_dump_json()}\n\n"
 
-        return StreamingResponse(stream(), media_type="text/event-stream")
-    else:
-        completion = await client.chat.completions.create(**data)
-        return completion.model_dump()
+                return StreamingResponse(stream(), media_type="text/event-stream")
+            except Exception as e:
+                logging.error(f"Streaming error: {e}")
+                return error_response(e)
+        else:
+            completion = await client.chat.completions.create(**data)
+            return completion.model_dump()
+    except Exception as e:
+        logging.error(f"Chat error: {e}")
+        return error_response(e)
 
 
 def running_in_docker() -> bool:

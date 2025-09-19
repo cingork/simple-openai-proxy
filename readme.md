@@ -6,7 +6,7 @@ This project is a simple proxy server for the OpenAI API. It allows you to use t
 
 ## Features
 
-*   Supports multiple API providers (OpenAI, Azure, custom)
+*   Supports multiple API providers (OpenAI, Groq, OpenRouter, custom)
 *   Can be configured via command-line arguments or environment variables
 *   Provides a simple and easy-to-use interface
 *   Supports streaming responses
@@ -23,7 +23,7 @@ This project is a simple proxy server for the OpenAI API. It allows you to use t
 
 1.  Clone the repository:
     ```bash
-    git clone https://github.com/your-username/simple-openai-proxy.git
+    git clone https://github.com/cingork/simple-openai-proxy
     ```
 2.  Install the dependencies:
     ```bash
@@ -36,7 +36,7 @@ The proxy server can be configured using command-line arguments or environment v
 
 **Command-line arguments:**
 
-*   `--provider`: The API provider to use (e.g., `openai`, `azure`, `custom`).
+*   `--provider`: The API provider to use (e.g., `openai`, `groq`, `openrouter`, `custom`).
 *   `--api_key`: The API key for the selected provider.
 *   `--base_url`: The custom API endpoint URL for the `custom` provider.
 
@@ -44,9 +44,7 @@ The proxy server can be configured using command-line arguments or environment v
 
 *   `PROVIDER`: The API provider to use.
 *   `OPENAI_API_KEY`: The API key for the OpenAI provider.
-*   `AZURE_API_KEY`: The API key for the Azure provider.
-*   `CUSTOM_API_KEY`: The API key for the custom provider.
-*   `CUSTOM_API_BASE_URL`: The custom API endpoint URL for the `custom` provider.
+*   `CUSTOM_API_BASE_URL`: The custom API endpoint URL for the `custom` provider. **Required if using the `custom` provider.**
 *   `PORT`: The port to run the proxy server on.
 
 ### Running the server
@@ -61,6 +59,12 @@ For example, to run the server with the OpenAI provider, use the following comma
 
 ```bash
 python main.py --provider openai --api_key <your_openai_api_key>
+```
+
+To use a custom provider, you must specify the custom API endpoint URL using the `--base_url` argument:
+
+```bash
+python main.py --provider custom --api_key <your_custom_api_key> --base_url <your_custom_api_base_url>
 ```
 
 **Alternatively**, you can run the script without any arguments and it will prompt you to manually enter the API provider and API key:
@@ -115,5 +119,13 @@ For example, to run the container with the OpenAI provider, create a `.env` file
 ```
 PROVIDER=openai
 OPENAI_API_KEY=<your_openai_api_key>
-``` 
+```
+
+To use a custom provider, your `.env` file should include both the provider and the custom API base URL:
+```
+PROVIDER=custom
+CUSTOM_API_KEY=<your_custom_api_key>
+CUSTOM_API_BASE_URL=<your_custom_api_base_url>
+PORT=8192
+```
 And then run `docker-compose up`.

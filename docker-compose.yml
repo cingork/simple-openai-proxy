@@ -4,7 +4,7 @@ services:
   proxy:
     build: .
     ports:
-      - "8192:8192"
+      - "${PORT}:${PORT}"
     env_file:
       - .env
     command: ["python", "main.py", "--provider", "${PROVIDER}"]
